@@ -17,12 +17,16 @@ var C = {
             this.wgl = WGL
                 .with('.cnvs')
                 .using(sliderVS, sliderFS)
-                .resources([{url: '../img/efes2.jpg'}, {url: '../img/lady.jpg'}, {url: '../img/mount.jpg'}, {url: '../img/lady2.jpg'}])
+                .resources([{url: '../img/efes2.jpg'}, {url: '../img/lady.jpg'}, {url: '../img/mount.jpg'}])
                 .on('trigger')
                 .displace({url: '../img/maps/12.jpg'})
                 .using(fake3DVS, fake3DFS)
                 .on('move', 'orientation')
-                .blend([{url: '../img/maps/efes2.jpg', shaderData: {x_fac: 30, y_fac: -30}}, {url: '../img/maps/lady.jpg', shaderData: {x_fac: 35, y_fac: 15}}, {url: '../img/maps/mount-map.jpg', shaderData: {x_fac: 15, y_fac: 35}}, {url: '../img/maps/lady2.jpg', shaderData: {x_fac: 90, y_fac: 60}}])
+                .blend([
+                    {url: '../img/maps/efes2.jpg', shaderData: {x_fac: 30, y_fac: -30}},
+                    {url: '../img/maps/lady.jpg', shaderData: {x_fac: 35, y_fac: 15}},
+                    {url: '../img/maps/mount-map.jpg', shaderData: {x_fac: 15, y_fac: -35}}
+                ])
                 .onComplete(function(){
                     $('.preloader').remove();
                 });
