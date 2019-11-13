@@ -21,7 +21,7 @@ var C = {
                 .on('trigger')
                 .displace({url: 'img/maps/12.jpg'})
                 .using(fake3DVS, fake3DFS)
-                .on('move', 'orientation')
+                .on('move')
                 .blend([
                     {url: 'img/maps/efes2.jpg', shaderData: {x_fac: 30, y_fac: -30}},
                     {url: 'img/maps/lady.jpg', shaderData: {x_fac: 35, y_fac: 15}},
