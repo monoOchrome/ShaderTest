@@ -11,7 +11,7 @@ void main() {\
 }";
 
 var sliderFS =
-"precision mediump float;\
+"precision highp float;\
 \
 uniform sampler2D u_image;\
 uniform sampler2D u_image1;\
@@ -45,7 +45,7 @@ void main() {\
 }";
 
 var fake3DFS =
-"precision mediump float;\
+"precision highp float;\
 \
 uniform sampler2D u_image;\
 uniform sampler2D u_image1;\
