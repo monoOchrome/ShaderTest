@@ -1,0 +1,115 @@
+<html>
+	<head>
+		<style>
+			html, body{
+				margin: 0;
+				overflow: hidden;
+			}
+
+			canvas{
+				width: 100%;
+				height: 100%;
+			}
+
+			.nav, .links{
+				position: absolute;
+				bottom: 20px;
+				left: 50%;
+				transform: translateX(-50%);
+				color: #ffffff;
+				font-size: 30px;
+				font-family: monospace;
+				background-color: rgba(0,0,0,0.5);
+				padding: 15px 30px;
+				font-family: sans-serif;
+			}
+
+			.links{
+				bottom: unset;
+				top: 20px;
+			}
+
+			.nav span, .links span{
+				cursor: pointer;
+				padding: 0 10px;
+			}
+
+			.nav span.active, .links span.active{
+				pointer-events: none;
+				color: #932cd2;
+			}
+
+			.preloader{
+				position: absolute;
+				height: 100vh;
+				width: 100%;
+				display: flex;
+				align-items: center;
+				background-color: #fff;
+				z-index: 2;
+			}
+
+			.preloader p{
+				width: 100%;
+				font-family: sans-serif;
+				font-size: 13vw;
+				text-align: center;
+				opacity: 0.5;
+				margin: 0;
+				color:#000;
+				font-weight: bold;
+				line-height: 0.8;
+			}
+
+			.text{
+				pointer-events: none;
+				position: absolute;
+				height: 100vh;
+				display: flex;
+				align-items: center;
+			}
+
+			.text p{
+				font-family: sans-serif;
+				font-size: 13vw;
+				text-align: center;
+				opacity: 0.5;
+				margin: 0;
+				color:#fff;
+				font-weight: bold;
+				line-height: 0.8;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="preloader">
+			<p>Loading...</p>
+		</div>
+		<div class="text">
+			<p>ANADOLU EFES</p>
+		</div>
+		<canvas class="cnvs"></canvas>
+		<div class="links">
+			<span class="active">Demo 1</span>
+			<span>Demo 2</span>
+			<span>Demo 3</span>
+			<span>Demo 4</span>
+			<span>Demo 5</span>
+		</div>
+		<div class="nav">
+			<span>Prev</span>
+			<span class="active">1</span>
+			<span>2</span>
+			<span>3</span>
+			<span>4</span>
+			<span>Next</span>
+		</div>
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<script src="wgl.js"></script>
+		<script src="wgl-actions.js"></script>
+		<script src="wgl-entity.js"></script>
+		<script src="wgl-utils.js"></script>
+		<script src="shaders.js"></script>
+		<script src="main.js"></script>
+	</body>
+</html>
