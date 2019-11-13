@@ -59,9 +59,9 @@ var C = {
 			C.targetY = (event.clientY  - window.innerHeight / 2) / 32;
         });
         
-        if(window.DeviceOrientationEvent){
-            window.addEventListener('deviceorientation', this.onDeviceOrientation.bind(this));
-        }
+        // if(window.DeviceOrientationEvent){
+        //     window.addEventListener('deviceorientation', this.onDeviceOrientation.bind(this));
+        // }
 
         requestAnimationFrame(this.animate.bind(this));
     },
