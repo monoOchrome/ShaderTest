@@ -63,29 +63,34 @@ var C = {
         requestAnimationFrame(this.animate.bind(this));
     },
     initDeviceOrientation: function(){
-        window.DeviceMotionEvent
-            .requestPermission()
-            .then(function(response){ $('p').text(response); })
-            .catch(function(error){ $('p').text(error); })
-        
-        if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function'){
-            const banner = document.createElement('div')
-            banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; top:0;left:0; background-color:#000; color: #fff"><p class="permission" style="padding: 10px">Click here to enable DeviceMotion</p></div>`
-            banner.onclick = C.ClickRequestDeviceMotionEvent;
-            document.querySelector('body').appendChild(banner);
-        }else if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission !== 'function'){
-            C.onDeviceOrientation();
+        if(window.DeviceMotionEvent){
+            if(typeof window.DeviceMotionEvent.requestPermission === 'function'){
+                var grant = false;
+                window.DeviceMotionEvent
+                    .requestPermission()
+                    .then(function(response){ 
+                        if(response === 'granted') C.onDeviceOrientation();
+                        else C.addRequestBanner();
+                    })
+                    .catch(function(error){ C.addRequestBanner(); })
+            }else{
+                C.onDeviceOrientation();
+            }
         }
+    },
+    addRequestBanner: function(){
+        $('body').append('<div class="request-banner" style="z-index: 1; position: absolute; width: 100%; top:0;left:0; background-color:#000; color: #fff"><p class="permission" style="padding: 10px">Click here to enable DeviceMotion</p></div>');
+        $('.request-banner')[0].onclick = C.ClickRequestDeviceMotionEvent;
     },
     onDeviceOrientation: function(){
         var gn = new GyroNorm();
         gn
-        .init({gravityNormalized: true})
+        .init({orientationBase:GyroNorm.WORLD, screenAdjusted:true})
         .then(function(){
             gn.start(function(data){
                 var x = WGL.utils.clamp(data.do.gamma, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt)
-                var y = -WGL.utils.clamp(data.do.alpha, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt);
-                $('p').text(x.toFixed(2) + '/' + y.toFixed(2));
+                var y = -WGL.utils.clamp(data.do.beta, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt);
+                $('p').text(x.toFixed(2) + 'x/y' + y.toFixed(2));
                 C.targetX = x / 4;
                 C.targetY = y / 4;
             });
