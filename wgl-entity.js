@@ -207,8 +207,6 @@ WGL.entity = function(){
             this.gl.linkProgram(p);
             this.gl.detachShader(p, vs);
             this.gl.detachShader(p, fs);
-            this.gl.deleteShader(vs);
-            this.gl.deleteShader(fs);
             this['program' + this.programIndex] = p;
 
             this.locations['u_res' + this.programIndex] = this.gl.getUniformLocation(p, "u_res");
