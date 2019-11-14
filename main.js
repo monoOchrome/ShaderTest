@@ -68,10 +68,10 @@ var C = {
     startAlpha: null,
     startBeta: null,
     onDeviceOrientation: function(event){
-        if(this.startAlpha === null) this.startAlpha = event.alpha;
+        if(this.startAlpha === null) this.startAlpha = event.gamma;
         if(this.startBeta === null) this.startBeta = event.beta;
 
-        var a = WGL.utils.clamp(event.alpha - this.startAlpha, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
+        var a = WGL.utils.clamp(event.gamma - this.startAlpha, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
         var b = WGL.utils.clamp(event.beta - this.startBeta, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
         C.targetX = a / 32;
         C.targetY = b / 32;
@@ -88,12 +88,11 @@ window.onload = function () {
 
 	// Check if is IOS 13 when page loads.
 	if ( window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function' ){
-		$('p').text('require.')
 		// Everything here is just a lazy banner. You can do the banner your way.
 		const banner = document.createElement('div')
-		banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; background-color:#000; color: #fff"><p style="padding: 10px">Click here to enable DeviceMotion</p></div>`
+		banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; background-color:#000; color: #fff"><p class="permission" style="padding: 10px">Click here to enable DeviceMotion</p></div>`
 		banner.onclick = ClickRequestDeviceMotionEvent // You NEED to bind the function into a onClick event. An artificial 'onClick' will NOT work.
-		document.querySelector('body').appendChild(banner)
+		document.querySelector('body').appendChild(banner);
 	}
   }
   
@@ -103,10 +102,10 @@ window.onload = function () {
 	  .then(response => {
 		if (response === 'granted') {
 		  window.addEventListener('devicemotion',
-			() => { $('p').text('DeviceMotion permissions granted.') },
+			() => { $('p.permission').text('DeviceMotion permissions granted.') },
 			(e) => { throw e }
 		)} else {
-			$('p').text('DeviceMotion permissions not granted.')
+			$('p.permission').text('DeviceMotion permissions not granted.')
 		}
 	  })
 	  .catch(e => {
