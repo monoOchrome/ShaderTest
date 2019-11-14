@@ -85,7 +85,7 @@ var C = {
     onDeviceOrientation: function(){
         var gn = new GyroNorm();
         gn
-        .init({orientationBase:GyroNorm.WORLD, screenAdjusted: false})
+        .init({orientationBase:GyroNorm.GAME, screenAdjusted: false})
         .then(function(){
             gn.start(function(data){
                 var x = WGL.utils.clamp(data.do.gamma, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt)
