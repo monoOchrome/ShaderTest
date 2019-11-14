@@ -69,10 +69,10 @@ var C = {
     startBeta: null,
     onDeviceOrientation: function(event){
         if(this.startAlpha === null) this.startAlpha = event.gamma;
-        if(this.startBeta === null) this.startBeta = event.beta;
+        if(this.startBeta === null) this.startBeta = event.alpha;
 
         var a = WGL.utils.clamp(event.gamma - this.startAlpha, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
-        var b = WGL.utils.clamp(event.beta - this.startBeta, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
+        var b = WGL.utils.clamp(event.alpha - this.startBeta, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
         C.targetX = a / 32;
         C.targetY = b / 32;
     },
