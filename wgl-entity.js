@@ -13,7 +13,6 @@ WGL.entity = function(){
         animate: function(time){
             if(this.currentAction){
                 if(this.currentAction.name == 'trigger'){
-                    this.gl.useProgram(this.currentProgram);
                     this.lock = true;
                     if(!this.start) this.start = time;
                     this.gl.uniform1f(this.gl.getUniformLocation(this.currentProgram, "disp"), WGL.utils.outExpo((time - this.start) / 1000));
@@ -82,7 +81,7 @@ WGL.entity = function(){
             }
 
             if(done){
-                for(var key in this.actions) if(this.actions[key]) this.actions[key].enable();
+                this.actions['orientation'].enable();
                 this.animate();
                 callback.call(this);
             }else setTimeout(function(){ this.onComplete(callback); }.bind(this), 50);
