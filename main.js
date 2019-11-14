@@ -29,6 +29,7 @@ var C = {
                 ])
                 .onComplete(function(){
                     $('.preloader').remove();
+                    C.initDeviceOrientation();
                 });
         }
 
@@ -63,53 +64,49 @@ var C = {
     },
     startAlpha: null,
     startBeta: null,
+    initDeviceOrientation: function(event){
+        if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function' ){
+            const banner = document.createElement('div')
+            banner.classList = 'request-banner';
+            banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; background-color:#000; color: #fff"><p class="permission" style="padding: 10px">Click here to enable DeviceMotion</p></div>`
+            banner.onclick = ClickRequestDeviceMotionEvent;
+            document.querySelector('body').appendChild(banner);
+        }else if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission !== 'function'){
+            C.onDeviceOrientation();
+        }
+    },
     onDeviceOrientation: function(event){
-        if(this.startAlpha === null) this.startAlpha = event.gamma;
-        if(this.startBeta === null) this.startBeta = event.alpha;
-
-        var a = WGL.utils.clamp(event.gamma - this.startAlpha, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
-        var b = WGL.utils.clamp(event.alpha - this.startBeta, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
-        C.targetX = a / 8;
-        C.targetY = b / 8;
+        var gn = new GyroNorm();
+        gn
+        .init({gravityNormalized: true})
+        .then(function(){
+            gn.start(function(data){
+                var x = WGL.utils.clamp(data.do.gamma, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt)
+                var y = -WGL.utils.clamp(data.do.beta, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
+                C.targetX = x / 16;
+                C.targetY = y / 16;
+            });
+        }).catch(function(e){
+            // No support
+        });
     },
 	animate: function(time){
 		this.currentX += .05 * (this.targetX - this.currentX);
 		this.currentY += .05 * (this.targetY - this.currentY);
 		$(".text").css("transform", "translate(" + this.currentX + "px, " + -this.currentY + "px)");
 		requestAnimationFrame(this.animate.bind(this));
-	}
-};
-
-window.onload = function () {
-	if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function' ){
-		const banner = document.createElement('div')
-		banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; background-color:#000; color: #fff"><p class="permission" style="padding: 10px">Click here to enable DeviceMotion</p></div>`
-		banner.onclick = ClickRequestDeviceMotionEvent;
-		document.querySelector('body').appendChild(banner);
-	}
-}
-
-function ClickRequestDeviceMotionEvent(){
-    window.DeviceMotionEvent
+    },
+    ClickRequestDeviceMotionEvent: function(){
+        window.DeviceMotionEvent
         .requestPermission()
         .then(function(response){
             if(response === 'granted'){
-                var gn = new GyroNorm();
-                gn
-                .init({gravityNormalized: true})
-                .then(function(){
-                    gn.start(function(data){
-                        var x = WGL.utils.clamp(data.do.gamma, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt)
-                        var y = -WGL.utils.clamp(data.do.beta, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
-                        C.targetX = x / 16;
-                        C.targetY = y / 16;
-                    });
-                }).catch(function(e){
-                    // No support
-                });
+                $('.request-banner').remove();
+                C.onDeviceOrientation();
             }
         })
         .catch(function(error){})
-}
+    }
+};
 
 C.init();
