@@ -21,7 +21,7 @@ var C = {
                 .on('trigger')
                 .displace({url: 'img/maps/12.jpg'})
                 .using(fake3DVS, fake3DFS)
-                .on('move')
+                .on('move', 'orientation')
                 .blend([
                     {url: 'img/maps/efes2.jpg', shaderData: {x_fac: 30, y_fac: -30}},
                     {url: 'img/maps/lady.jpg', shaderData: {x_fac: 35, y_fac: 15}},
@@ -59,9 +59,9 @@ var C = {
 			C.targetY = (event.clientY  - window.innerHeight / 2) / 32;
         });
         
-        // if(window.DeviceOrientationEvent){
-        //     window.addEventListener('deviceorientation', this.onDeviceOrientation.bind(this));
-        // }
+        if(window.DeviceOrientationEvent){
+            window.addEventListener('deviceorientation', this.onDeviceOrientation.bind(this));
+        }
 
         requestAnimationFrame(this.animate.bind(this));
     },
@@ -84,34 +84,34 @@ var C = {
 	}
 };
 
-// window.onload = function () {
+window.onload = function () {
 
-// 	// Check if is IOS 13 when page loads.
-// 	if ( window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function' ){
-// 		$('p').text('require.')
-// 		// Everything here is just a lazy banner. You can do the banner your way.
-// 		const banner = document.createElement('div')
-// 		banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; background-color:#000; color: #fff"><p style="padding: 10px">Click here to enable DeviceMotion</p></div>`
-// 		banner.onclick = ClickRequestDeviceMotionEvent // You NEED to bind the function into a onClick event. An artificial 'onClick' will NOT work.
-// 		document.querySelector('body').appendChild(banner)
-// 	}
-//   }
+	// Check if is IOS 13 when page loads.
+	if ( window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function' ){
+		$('p').text('require.')
+		// Everything here is just a lazy banner. You can do the banner your way.
+		const banner = document.createElement('div')
+		banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; background-color:#000; color: #fff"><p style="padding: 10px">Click here to enable DeviceMotion</p></div>`
+		banner.onclick = ClickRequestDeviceMotionEvent // You NEED to bind the function into a onClick event. An artificial 'onClick' will NOT work.
+		document.querySelector('body').appendChild(banner)
+	}
+  }
   
   
-//   function ClickRequestDeviceMotionEvent () {
-// 	window.DeviceMotionEvent.requestPermission()
-// 	  .then(response => {
-// 		if (response === 'granted') {
-// 		  window.addEventListener('devicemotion',
-// 			() => { $('p').text('DeviceMotion permissions granted.') },
-// 			(e) => { throw e }
-// 		)} else {
-// 			$('p').text('DeviceMotion permissions not granted.')
-// 		}
-// 	  })
-// 	  .catch(e => {
-// 		console.error(e)
-// 	  })
-//   }
+  function ClickRequestDeviceMotionEvent () {
+	window.DeviceMotionEvent.requestPermission()
+	  .then(response => {
+		if (response === 'granted') {
+		  window.addEventListener('devicemotion',
+			() => { $('p').text('DeviceMotion permissions granted.') },
+			(e) => { throw e }
+		)} else {
+			$('p').text('DeviceMotion permissions not granted.')
+		}
+	  })
+	  .catch(e => {
+		console.error(e)
+	  })
+  }
 
 C.init();
