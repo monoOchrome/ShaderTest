@@ -85,12 +85,12 @@ var C = {
     onDeviceOrientation: function(){
         var gn = new GyroNorm();
         gn
-        .init({orientationBase:GyroNorm.WORLD, screenAdjusted:true})
+        .init({orientationBase:GyroNorm.WORLD, screenAdjusted: false})
         .then(function(){
             gn.start(function(data){
                 var x = WGL.utils.clamp(data.do.gamma, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt)
                 var y = -WGL.utils.clamp(data.do.beta, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt);
-                $('p').text(x.toFixed(2) + 'x/y' + y.toFixed(2));
+                $('p').text(x.toFixed(2) + 'x1/1y' + y.toFixed(2));
                 C.targetX = x / 4;
                 C.targetY = y / 4;
             });
