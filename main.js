@@ -27,7 +27,7 @@ var C = {
                 .blend([
                     {url: 'img/maps/efes2.jpg', shaderData: {x_fac: 30, y_fac: -30}},
                     {url: 'img/maps/lady.jpg', shaderData: {x_fac: 35, y_fac: 15}},
-                    {url: 'img/maps/mount-map.jpg', shaderData: {x_fac: 15, y_fac: -35}}
+                    {url: 'img/maps/mount-map.jpg', shaderData: {x_fac: 10, y_fac: -35}}
                 ])
                 .onComplete(function(){
                     $('.preloader').remove();
@@ -101,6 +101,10 @@ var C = {
         .then(function(){
             C.wgl.actions['orientation'].enable();
             gn.start(function(data){
+                var x = WGL.utils.clamp(data.do.gamma, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt)
+                var y = -WGL.utils.clamp(data.do.beta, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt);
+                C.targetX = x / 4;
+                C.targetY = y / 4;
                 C.wgl.actions['orientation'].targetX = -WGL.utils.clamp(data.do.gamma, -C.maxTilt, C.maxTilt) / C.maxTilt;
                 // C.wgl.actions['orientation'].targetY = -WGL.utils.clamp(data.do.beta - 70, -C.maxTilt, C.maxTilt) / C.maxTilt;
             });
