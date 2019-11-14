@@ -73,8 +73,8 @@ var C = {
 
         var a = WGL.utils.clamp(event.gamma - this.startAlpha, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
         var b = WGL.utils.clamp(event.alpha - this.startBeta, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
-        C.targetX = a / 32;
-        C.targetY = b / 32;
+        C.targetX = a / 8;
+        C.targetY = b / 8;
     },
 	animate: function(time){
 		this.currentX += .05 * (this.targetX - this.currentX);
