@@ -6,11 +6,13 @@ var C = {
         {url: "img/maps/13.png"},
         {url: "img/maps/4.jpg"}
     ],
-    maxTilt: 15,
+    maxTilt: 2,
 	currentX: 0,
 	currentY: 0,
 	targetX: 0,
-	targetY: 0,
+    targetY: 0,
+    touchStartX: 0,
+    touchEndX: 0,
     wgl: null,
 	init: function(){
         if(WGL.supports()){
@@ -21,7 +23,7 @@ var C = {
                 .on('trigger')
                 .displace({url: 'img/maps/12.jpg'})
                 .using(fake3DVS, fake3DFS)
-                .on('move', 'orientation')
+                .on('move')
                 .blend([
                     {url: 'img/maps/efes2.jpg', shaderData: {x_fac: 30, y_fac: -30}},
                     {url: 'img/maps/lady.jpg', shaderData: {x_fac: 35, y_fac: 15}},
@@ -31,6 +33,16 @@ var C = {
                     $('.preloader').remove();
                     C.initDeviceOrientation();
                 });
+        }
+
+        if(WGL.utils.isMobile()){
+            window.addEventListener('touchstart', function(event) {
+                C.touchStartX = event.changedTouches[0].screenX;
+            }, false);
+            window.addEventListener('touchend', function(event) {
+                C.touchEndX = event.changedTouches[0].screenX;
+                C.onTouch();
+            }, false); 
         }
 
         $(".nav span").on("click", function(event){
@@ -85,20 +97,26 @@ var C = {
     onDeviceOrientation: function(){
         var gn = new GyroNorm();
         gn
-        .init({orientationBase:GyroNorm.GAME, screenAdjusted: true})
+        .init({orientationBase: GyroNorm.GAME, screenAdjusted: true, decimalCount: 0, frequency: 17, gravityNormalized: true})
         .then(function(){
+            C.wgl.actions['orientation'].enable();
             gn.start(function(data){
-                var x = WGL.utils.clamp(data.do.gamma, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt)
-                var y = -WGL.utils.clamp(data.do.beta, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt);
-                $('p').text(data.dm.alpha + ' ' + data.dm.gamma + ' ' + data.dm.beta);
-                C.targetX = x / 4;
-                C.targetY = y / 4;
                 C.wgl.actions['orientation'].targetX = -WGL.utils.clamp(data.do.gamma, -C.maxTilt, C.maxTilt) / C.maxTilt;
-                C.wgl.actions['orientation'].targetY = -WGL.utils.clamp(data.do.beta, -C.maxTilt, C.maxTilt) / C.maxTilt;
+                // C.wgl.actions['orientation'].targetY = -WGL.utils.clamp(data.do.beta - 70, -C.maxTilt, C.maxTilt) / C.maxTilt;
             });
-        }).catch(function(e){
-            $('p').text('nosupport');
-        });
+        }).catch(function(e){});
+    },
+    onTouch: function(){
+        var dir = '';
+        if(C.touchEndX - C.touchStartX < -20) dir = 'Next';
+        if(C.touchEndX - C.touchStartX > 20) dir = 'Prev';
+
+        if(dir){
+            var currentIndex = null;
+            if(dir == "Prev") currentIndex = C.wgl.actions['trigger'].prev({x_fac: -0.6, y_fac: -0.6});
+            else if(dir == "Next") currentIndex = C.wgl.actions['trigger'].next({x_fac: 0.6, y_fac: 0.6});
+            $(".nav span").eq(currentIndex + 1).addClass("active").siblings().removeClass("active");
+        }
     },
 	animate: function(time){
 		this.currentX += .05 * (this.targetX - this.currentX);

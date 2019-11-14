@@ -2,6 +2,7 @@ WGL.actions = {
     trigger: function(program){
         var that = this;
         return {
+            name: 'trigger',
             parent: that,
             program: program,
             enable: function(){
@@ -28,7 +29,8 @@ WGL.actions = {
                 this.parent.gl.useProgram(null);
             },
             next: function(uniforms){
-                if(this.animationFrame) return this.parent.activeTextureIndex;
+                if(this.parent.lock) return this.parent.activeTextureIndex;
+                this.parent.lock = true;
                 this.enable();
                 if(uniforms){
                     for(var key in uniforms) this.parent.set1f(key, uniforms[key]);
@@ -42,11 +44,11 @@ WGL.actions = {
                 this.parent.bindTexture(2, this.parent.displacer.texture);
                 this.parent.activeTextureIndex = nextIndex;
                 
-                this.animationFrame = requestAnimationFrame(this.animate.bind(this));
                 return this.parent.activeTextureIndex;
             },
             prev: function(uniforms){
-                if(this.animationFrame) return this.parent.activeTextureIndex;
+                if(this.parent.lock) return this.parent.activeTextureIndex;
+                this.parent.lock = true;
                 this.enable();
                 if(uniforms){
                     for(var key in uniforms) this.parent.set1f(key, uniforms[key]);
@@ -60,11 +62,11 @@ WGL.actions = {
                 this.parent.bindTexture(2, this.parent.displacer.texture);
                 this.parent.activeTextureIndex = prevIndex;
 
-                this.animationFrame = requestAnimationFrame(this.animate.bind(this));
                 return this.parent.activeTextureIndex;
             },
             goto: function(index, uniforms){
-                if(this.animationFrame) return this.parent.activeTextureIndex;
+                if(this.parent.lock) return this.parent.activeTextureIndex;
+                this.parent.lock = true;
                 this.enable();
                 if(uniforms){
                     for(var key in uniforms) this.parent.set1f(key, uniforms[key]);
@@ -77,30 +79,14 @@ WGL.actions = {
                 this.parent.bindTexture(2, this.parent.displacer.texture);
                 this.parent.activeTextureIndex = index;
 
-                this.animationFrame = requestAnimationFrame(this.animate.bind(this));
                 return this.parent.activeTextureIndex;
-            },
-            animate: function(time){
-                this.parent.lock = true;
-                if(!this.start) this.start = time;
-                this.parent.gl.uniform1f(this.parent.gl.getUniformLocation(this.program, "disp"), WGL.utils.outExpo((time - this.start) / 1000));
-                this.parent.resize();
-                if(time - this.start <= 1000) this.animationFrame = requestAnimationFrame(this.animate.bind(this));
-                else{
-                    cancelAnimationFrame(this.animationFrame);
-                    this.animationFrame = this.start = null;
-                    this.parent.textures[this.parent.activeTextureIndex].active = true;
-                    this.parent.bindTexture(0, this.parent.textures[this.parent.activeTextureIndex].texture);
-                    this.parent.gl.uniform1f(this.parent.gl.getUniformLocation(this.program, "disp"), 0);
-                    this.parent.resize();
-                    this.parent.lock = false;
-                }
-            },
+            }
         }
     },
     move: function(program){
         var that = this;
         return {
+            name: 'move',
             parent: that,
             program: program,
             enable: function(){
@@ -122,8 +108,6 @@ WGL.actions = {
                 }
             },
             disable: function(){
-                cancelAnimationFrame(this.animationFrame);
-                this.animationFrame = null;
                 this.currentX = this.currentY = this.targetX = this.targetY = 0
                 for(var i = 0; i < this.parent.textures.length; i++){
                     this.parent.textures[i].active = false;
@@ -131,26 +115,6 @@ WGL.actions = {
                 this.parent.bindTexture(0, null);
                 this.parent.bindTexture(1, null);
                 this.parent.gl.useProgram(null);
-            },
-            animate: function(){
-                if(this.parent.currentProgram != this.program || this.parent.lock){
-                    cancelAnimationFrame(this.animationFrame);
-                    this.animationFrame = null;
-                    return;
-                }
-                if(this.parent.textures[this.parent.activeTextureIndex].blend.shaderData){
-                    for(var key in this.parent.textures[this.parent.activeTextureIndex].blend.shaderData){
-                        this.parent.set1f(key, this.parent.textures[this.parent.activeTextureIndex].blend.shaderData[key]);
-                    }
-                }
-                this.currentX += .05 * (this.targetX - this.currentX);
-                this.currentY += .05 * (this.targetY - this.currentY);
-                this.parent.gl.uniform2f(this.parent.gl.getUniformLocation(this.program, 'mouse'), parseFloat(this.currentX.toFixed(2)), parseFloat(this.currentY.toFixed(2)));
-                this.parent.resize();
-                if(this.currentX.toFixed(6) == this.targetX.toFixed(6) && this.currentY.toFixed(6) == this.targetY.toFixed(6)){
-                    cancelAnimationFrame(this.animationFrame);
-                    this.animationFrame = null;
-                }else this.animationFrame = requestAnimationFrame(this.animate.bind(this));
             },
             listener: {
                 added: false,
@@ -160,7 +124,6 @@ WGL.actions = {
                     this.targetX = (this.parent.gl.canvas.width / 2 - event.clientX) / (this.parent.gl.canvas.width / 2);
                     this.targetY = (this.parent.gl.canvas.height / 2 - event.clientY) / (this.parent.gl.canvas.height / 2);
                     this.enable();
-                    if(!this.animationFrame) this.animationFrame = requestAnimationFrame(this.animate.bind(this));
                 }
             }
         }
@@ -172,6 +135,7 @@ WGL.actions = {
         }
         var that = this;
         return {
+            name: 'orientation',
             parent: that,
             program: program,
             maxTilt: 15,
@@ -197,8 +161,6 @@ WGL.actions = {
                 }
             },
             disable: function(){
-                cancelAnimationFrame(this.animationFrame);
-                this.animationFrame = null;
                 this.currentX = this.currentY = this.targetX = this.targetY = 0;
                 for(var i = 0; i < this.parent.textures.length; i++){
                     this.parent.textures[i].active = false;
@@ -206,26 +168,6 @@ WGL.actions = {
                 this.parent.bindTexture(0, null);
                 this.parent.bindTexture(1, null);
                 this.parent.gl.useProgram(null);
-            },
-            animate: function(){
-                if(this.parent.currentProgram != this.program || this.parent.lock){
-                    cancelAnimationFrame(this.animationFrame);
-                    this.animationFrame = null;
-                    return;
-                }
-                if(this.parent.textures[this.parent.activeTextureIndex].blend.shaderData){
-                    for(var key in this.parent.textures[this.parent.activeTextureIndex].blend.shaderData){
-                        this.parent.set1f(key, this.parent.textures[this.parent.activeTextureIndex].blend.shaderData[key]);
-                    }
-                }
-                this.currentX += .05 * (this.targetX - this.currentX);
-                this.currentY += .05 * (this.targetY - this.currentY);
-                this.parent.gl.uniform2f(this.parent.gl.getUniformLocation(this.program, 'mouse'), parseFloat(this.currentX.toFixed(2)), parseFloat(this.currentY.toFixed(2)));
-                this.parent.resize();
-                if(this.currentX.toFixed(6) == this.targetX.toFixed(6) && this.currentY.toFixed(6) == this.targetY.toFixed(6)){
-                    cancelAnimationFrame(this.animationFrame);
-                    this.animationFrame = null;
-                }else this.animationFrame = requestAnimationFrame(this.animate.bind(this));
             },
             listener: {
                 added: false,
@@ -235,10 +177,9 @@ WGL.actions = {
                     if(this.startAlpha === null) this.startAlpha = event.alpha;
                     if(this.startBeta === null) this.startBeta = event.beta;
 
-                    this.targetX = -WGL.utils.clamp(event.alpha - this.startAlpha, -this.maxTilt, this.maxTilt) / this.maxTilt;
-                    this.targetY = -WGL.utils.clamp(event.beta - this.startBeta, -this.maxTilt, this.maxTilt) / this.maxTilt;
+                    // this.targetX = -WGL.utils.clamp(event.alpha - this.startAlpha, -this.maxTilt, this.maxTilt) / this.maxTilt;
+                    // this.targetY = -WGL.utils.clamp(event.beta - this.startBeta, -this.maxTilt, this.maxTilt) / this.maxTilt;
                     this.enable();
-                    if(!this.animationFrame) this.animationFrame = requestAnimationFrame(this.animate.bind(this));
                 }
             }
         }

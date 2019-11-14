@@ -8,6 +8,41 @@ WGL.entity = function(){
         locations: {},
         programIndex: -1,
         textures: [],
+        start: null,
+        lock: false,
+        animate: function(time){
+            if(this.currentAction){
+                if(this.currentAction.name == 'trigger'){
+                    this.lock = true;
+                    if(!this.start) this.start = time;
+                    this.gl.uniform1f(this.gl.getUniformLocation(this.currentProgram, "disp"), WGL.utils.outExpo((time - this.start) / 1000));
+                    this.resize();
+                    if(time - this.start >= 1000){
+                        this.start = null;
+                        this.textures[this.activeTextureIndex].active = true;
+                        this.bindTexture(0, this.textures[this.activeTextureIndex].texture);
+                        this.gl.uniform1f(this.gl.getUniformLocation(this.currentProgram, "disp"), 0);
+                        this.resize();
+                        this.currentAction = null;
+                        this.lock = false;
+                    }
+                }else if((this.currentAction.name == 'move' || this.currentAction.name == 'orientation') && !this.lock){
+                    if(this.textures[this.activeTextureIndex].blend.shaderData){
+                        for(var key in this.textures[this.activeTextureIndex].blend.shaderData){
+                            this.set1f(key, this.textures[this.activeTextureIndex].blend.shaderData[key]);
+                        }
+                    }
+                    this.currentAction.currentX += .05 * (this.currentAction.targetX - this.currentAction.currentX);
+                    this.currentAction.currentY += .05 * (this.currentAction.targetY - this.currentAction.currentY);
+                    this.gl.uniform2f(this.gl.getUniformLocation(this.currentProgram, 'mouse'), parseFloat(this.currentAction.currentX.toFixed(2)), parseFloat(this.currentAction.currentY.toFixed(2)));
+                    this.resize();
+                    if(this.currentAction.currentX.toFixed(6) == this.currentAction.targetX.toFixed(6) && this.currentAction.currentY.toFixed(6) == this.currentAction.targetY.toFixed(6))
+                        this.currentAction = null;
+                }
+            }
+
+            requestAnimationFrame(this.animate.bind(this));
+        },
         bindTexture: function(index, texture){
             this.gl.activeTexture(this.gl['TEXTURE' + index]);
             this.gl.bindTexture(this.gl.TEXTURE_2D, texture);
@@ -31,6 +66,7 @@ WGL.entity = function(){
         },
         on: function(){
             for(var i = 0; i < arguments.length; i++){
+                if(WGL.utils.isMobile() && arguments[i] == 'move') arguments[i] = 'orientation';
                 if(this.actions[arguments[i]]) console.warn('WGL has already an action type of ' + arguments[i] + '. An override will occur.');
                 this.actions[arguments[i]] = WGL.actions[arguments[i]].call(this, this['program' + this.programIndex]);
             }
@@ -46,6 +82,7 @@ WGL.entity = function(){
 
             if(done){
                 for(var key in this.actions) if(this.actions[key]) this.actions[key].enable();
+                this.animate();
                 callback.call(this);
             }else setTimeout(function(){ this.onComplete(callback); }.bind(this), 50);
             return this;
