@@ -63,13 +63,13 @@ var C = {
         requestAnimationFrame(this.animate.bind(this));
     },
     initDeviceOrientation: function(){
+        $('p').text(typeof window.DeviceMotionEvent.requestPermission);
         if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function'){
             const banner = document.createElement('div')
             banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; top:0;left:0; background-color:#000; color: #fff"><p class="permission" style="padding: 10px">Click here to enable DeviceMotion</p></div>`
             banner.onclick = C.ClickRequestDeviceMotionEvent;
             document.querySelector('body').appendChild(banner);
         }else if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission !== 'function'){
-            $('p').text(typeof window.DeviceMotionEvent.requestPermission);
             C.onDeviceOrientation();
         }
     },
@@ -80,7 +80,7 @@ var C = {
         .then(function(){
             gn.start(function(data){
                 var x = WGL.utils.clamp(data.do.gamma, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt)
-                var y = -WGL.utils.clamp(data.do.beta, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt);
+                var y = -WGL.utils.clamp(data.do.alpha, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt);
                 $('p').text(x.toFixed(2) + '/' + y.toFixed(2));
                 C.targetX = x / 4;
                 C.targetY = y / 4;
