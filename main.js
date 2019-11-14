@@ -65,8 +65,7 @@ var C = {
     initDeviceOrientation: function(){
         if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function'){
             const banner = document.createElement('div')
-            banner.classList = 'request-banner';
-            banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; background-color:#000; color: #fff"><p class="permission" style="padding: 10px">Click here to enable DeviceMotion</p></div>`
+            banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; top:0;left:0; background-color:#000; color: #fff"><p class="permission" style="padding: 10px">Click here to enable DeviceMotion</p></div>`
             banner.onclick = C.ClickRequestDeviceMotionEvent;
             document.querySelector('body').appendChild(banner);
         }else if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission !== 'function'){
