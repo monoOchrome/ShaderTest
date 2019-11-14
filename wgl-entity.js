@@ -81,7 +81,7 @@ WGL.entity = function(){
             }
 
             if(done){
-                this.actions['orientation'].enable();
+                for(var key in this.actions) if(this.actions[key]) this.actions[key].enable();
                 this.animate();
                 callback.call(this);
             }else setTimeout(function(){ this.onComplete(callback); }.bind(this), 50);

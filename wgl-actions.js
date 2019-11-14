@@ -15,7 +15,11 @@ WGL.actions = {
                     this.parent.gl.uniform1i(this.parent.gl.getUniformLocation(this.program, "u_image1"), 1);
                     this.parent.gl.uniform1i(this.parent.gl.getUniformLocation(this.program, "u_image2"), 2);
                     this.parent.textures[this.parent.activeTextureIndex].active = true;
+                    this.parent.textures[1].active = true;
+                    this.parent.displacer.active = true;
                     this.parent.bindTexture(0, this.parent.textures[this.parent.activeTextureIndex].texture);
+                    this.parent.bindTexture(1, this.parent.textures[1].texture);
+                    this.parent.bindTexture(2, this.parent.displacer.texture);
                     this.parent.resize();
                 }
             },
