@@ -90,6 +90,7 @@ var C = {
             gn.start(function(data){
                 var x = WGL.utils.clamp(data.do.gamma, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt)
                 var y = -WGL.utils.clamp(data.do.beta, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt);
+                $('p').text(data.dm.alpha + ' ' + data.dm.gamma + ' ' + data.dm.beta);
                 C.targetX = x / 4;
                 C.targetY = y / 4;
                 C.wgl.actions['orientation'].targetX = -WGL.utils.clamp(data.do.gamma, -C.maxTilt, C.maxTilt) / C.maxTilt;
