@@ -102,9 +102,7 @@ var C = {
             C.wgl.actions['orientation'].enable();
             gn.start(function(data){
                 var x = WGL.utils.clamp(data.do.gamma, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt)
-                var y = -WGL.utils.clamp(data.do.beta, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt);
-                C.targetX = x / 4;
-                C.targetY = y / 4;
+                C.targetX = x / 16;
                 C.wgl.actions['orientation'].targetX = -WGL.utils.clamp(data.do.gamma, -C.maxTilt, C.maxTilt) / C.maxTilt;
                 // C.wgl.actions['orientation'].targetY = -WGL.utils.clamp(data.do.beta - 70, -C.maxTilt, C.maxTilt) / C.maxTilt;
             });
