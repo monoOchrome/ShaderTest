@@ -13,6 +13,7 @@ WGL.entity = function(){
         animate: function(time){
             if(this.currentAction){
                 if(this.currentAction.name == 'trigger'){
+                    this.gl.useProgram(this.currentProgram);
                     this.lock = true;
                     if(!this.start) this.start = time;
                     this.gl.uniform1f(this.gl.getUniformLocation(this.currentProgram, "disp"), WGL.utils.outExpo((time - this.start) / 1000));
