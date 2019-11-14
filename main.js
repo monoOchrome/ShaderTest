@@ -62,20 +62,18 @@ var C = {
 
         requestAnimationFrame(this.animate.bind(this));
     },
-    startAlpha: null,
-    startBeta: null,
-    initDeviceOrientation: function(event){
-        if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function' ){
+    initDeviceOrientation: function(){
+        if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function'){
             const banner = document.createElement('div')
             banner.classList = 'request-banner';
             banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; background-color:#000; color: #fff"><p class="permission" style="padding: 10px">Click here to enable DeviceMotion</p></div>`
-            banner.onclick = ClickRequestDeviceMotionEvent;
+            banner.onclick = C.ClickRequestDeviceMotionEvent;
             document.querySelector('body').appendChild(banner);
         }else if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission !== 'function'){
             C.onDeviceOrientation();
         }
     },
-    onDeviceOrientation: function(event){
+    onDeviceOrientation: function(){
         var gn = new GyroNorm();
         gn
         .init({gravityNormalized: true})
@@ -83,11 +81,12 @@ var C = {
             gn.start(function(data){
                 var x = WGL.utils.clamp(data.do.gamma, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt)
                 var y = -WGL.utils.clamp(data.do.beta, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
-                C.targetX = x / 16;
-                C.targetY = y / 16;
+                $('p').text(x.toFixed(2) + '/' + y.toFixed(2));
+                C.targetX = x / 4;
+                C.targetY = y / 4;
             });
         }).catch(function(e){
-            // No support
+            $('p').text('nosupport');
         });
     },
 	animate: function(time){
