@@ -63,7 +63,11 @@ var C = {
         requestAnimationFrame(this.animate.bind(this));
     },
     initDeviceOrientation: function(){
-        $('p').text(typeof window.DeviceMotionEvent.requestPermission);
+        window.DeviceMotionEvent
+            .requestPermission()
+            .then(function(response){ $('p').text(response); })
+            .catch(function(error){ $('p').text(error); })
+        
         if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function'){
             const banner = document.createElement('div')
             banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; top:0;left:0; background-color:#000; color: #fff"><p class="permission" style="padding: 10px">Click here to enable DeviceMotion</p></div>`
@@ -97,14 +101,14 @@ var C = {
     },
     ClickRequestDeviceMotionEvent: function(){
         window.DeviceMotionEvent
-        .requestPermission()
-        .then(function(response){
-            if(response === 'granted'){
-                $('.request-banner').remove();
-                C.onDeviceOrientation();
-            }
-        })
-        .catch(function(error){})
+            .requestPermission()
+            .then(function(response){
+                if(response === 'granted'){
+                    $('.request-banner').remove();
+                    C.onDeviceOrientation();
+                }
+            })
+            .catch(function(error){});
     }
 };
 
