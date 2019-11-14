@@ -69,6 +69,7 @@ var C = {
             banner.onclick = C.ClickRequestDeviceMotionEvent;
             document.querySelector('body').appendChild(banner);
         }else if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission !== 'function'){
+            $('p').text(typeof window.DeviceMotionEvent.requestPermission);
             C.onDeviceOrientation();
         }
     },
