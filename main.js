@@ -58,10 +58,6 @@ var C = {
 			C.targetX = (event.clientX  - window.innerWidth / 2) / 32;
 			C.targetY = (event.clientY  - window.innerHeight / 2) / 32;
         });
-        
-        if(window.DeviceOrientationEvent){
-            window.addEventListener('deviceorientation', this.onDeviceOrientation.bind(this));
-        }
 
         requestAnimationFrame(this.animate.bind(this));
     },
@@ -85,32 +81,35 @@ var C = {
 };
 
 window.onload = function () {
-
-	// Check if is IOS 13 when page loads.
-	if ( window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function' ){
-		// Everything here is just a lazy banner. You can do the banner your way.
+	if(window.DeviceMotionEvent && typeof window.DeviceMotionEvent.requestPermission === 'function' ){
 		const banner = document.createElement('div')
 		banner.innerHTML = `<div style="z-index: 1; position: absolute; width: 100%; background-color:#000; color: #fff"><p class="permission" style="padding: 10px">Click here to enable DeviceMotion</p></div>`
-		banner.onclick = ClickRequestDeviceMotionEvent // You NEED to bind the function into a onClick event. An artificial 'onClick' will NOT work.
+		banner.onclick = ClickRequestDeviceMotionEvent;
 		document.querySelector('body').appendChild(banner);
 	}
-  }
-  
-  
-  function ClickRequestDeviceMotionEvent () {
-	window.DeviceMotionEvent.requestPermission()
-	  .then(response => {
-		if (response === 'granted') {
-		  window.addEventListener('devicemotion',
-			() => { $('p.permission').text('DeviceMotion permissions granted.') },
-			(e) => { throw e }
-		)} else {
-			$('p.permission').text('DeviceMotion permissions not granted.')
-		}
-	  })
-	  .catch(e => {
-		console.error(e)
-	  })
-  }
+}
+
+function ClickRequestDeviceMotionEvent(){
+    window.DeviceMotionEvent
+        .requestPermission()
+        .then(function(response){
+            if(response === 'granted'){
+                var gn = new GyroNorm();
+                gn
+                .init({gravityNormalized: true})
+                .then(function(){
+                    gn.start(function(data){
+                        var x = WGL.utils.clamp(data.do.gamma, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt)
+                        var y = -WGL.utils.clamp(data.do.beta, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
+                        C.targetX = x / 16;
+                        C.targetY = y / 16;
+                    });
+                }).catch(function(e){
+                    // No support
+                });
+            }
+        })
+        .catch(function(error){})
+}
 
 C.init();
