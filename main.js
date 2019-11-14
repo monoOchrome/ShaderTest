@@ -79,8 +79,8 @@ var C = {
         .init({gravityNormalized: true})
         .then(function(){
             gn.start(function(data){
-                var x = WGL.utils.clamp(data.do.gamma, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt)
-                var y = -WGL.utils.clamp(data.do.beta, -this.maxTilt,  this.maxTilt) * ((window.innerWidth / 2) / this.maxTilt);
+                var x = WGL.utils.clamp(data.do.gamma, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt)
+                var y = -WGL.utils.clamp(data.do.beta, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt);
                 $('p').text(x.toFixed(2) + '/' + y.toFixed(2));
                 C.targetX = x / 4;
                 C.targetY = y / 4;
