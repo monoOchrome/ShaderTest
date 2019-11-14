@@ -90,9 +90,10 @@ var C = {
             gn.start(function(data){
                 var x = WGL.utils.clamp(data.do.gamma, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt)
                 var y = -WGL.utils.clamp(data.do.beta, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt);
-                $('p').text(x.toFixed(2) + 'x2/2y' + y.toFixed(2));
                 C.targetX = x / 4;
                 C.targetY = y / 4;
+                C.wgl.actions['orientation'].targetX = -WGL.utils.clamp(data.do.gamma, -this.maxTilt, this.maxTilt) / this.maxTilt;
+                C.wgl.actions['orientation'].targetY = -WGL.utils.clamp(data.do.beta, -this.maxTilt, this.maxTilt) / this.maxTilt;
             });
         }).catch(function(e){
             $('p').text('nosupport');
