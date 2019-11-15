@@ -26,7 +26,7 @@ var C = {
                 .on('move')
                 .blend([
                     {url: 'img/maps/mount-map.jpg', shaderData: {x_fac: 10, y_fac: -35}},
-                    {url: 'img/maps/lady.jpg', shaderData: {x_fac: 35, y_fac: 15}},
+                    {url: 'img/maps/lady.jpg', shaderData: {x_fac: 25, y_fac: 15}},
                     {url: 'img/maps/efes2.jpg', shaderData: {x_fac: 30, y_fac: -30}}
                 ])
                 .onComplete(function(){
