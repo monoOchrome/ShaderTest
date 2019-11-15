@@ -14,7 +14,7 @@ var C = {
     touchStartX: 0,
     touchEndX: 0,
     wgl: null,
-    mobileShaderValues: [10, 5, 25],
+    mobileShaderValues: [10, 20, 25],
     desktopShaderValues: [10, 30, 30],
 	init: function(){
         var source = this.desktopShaderValues;
