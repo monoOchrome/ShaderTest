@@ -14,7 +14,11 @@ var C = {
     touchStartX: 0,
     touchEndX: 0,
     wgl: null,
+    mobileShaderValues: [10, 15, 25],
+    desktopShaderValues: [10, 30, 30],
 	init: function(){
+        var source = this.desktopShaderValues;
+        if(WGL.utils.isMobile()) source = this.mobileShaderValues;
         if(WGL.supports()){
             this.wgl = WGL
                 .with('.cnvs')
@@ -25,9 +29,9 @@ var C = {
                 .using(fake3DVS, fake3DFS)
                 .on('move')
                 .blend([
-                    {url: 'img/maps/mount-map.jpg', shaderData: {x_fac: 10, y_fac: -35}},
-                    {url: 'img/maps/lady.jpg', shaderData: {x_fac: 25, y_fac: 15}},
-                    {url: 'img/maps/efes2.jpg', shaderData: {x_fac: 30, y_fac: -30}}
+                    {url: 'img/maps/mount-map.jpg', shaderData: {x_fac: source[0], y_fac: -35}},
+                    {url: 'img/maps/lady.jpg', shaderData: {x_fac: source[1], y_fac: 15}},
+                    {url: 'img/maps/efes2.jpg', shaderData: {x_fac: source[2], y_fac: -30}}
                 ])
                 .onComplete(function(){
                     $('.preloader').remove();
