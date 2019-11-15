@@ -14,30 +14,35 @@
 
 			.nav, .links{
 				position: absolute;
-				bottom: 20px;
+				bottom: 10px;
 				left: 50%;
 				transform: translateX(-50%);
 				color: #ffffff;
-				font-size: 30px;
+				font-size: 1.2vw;
 				font-family: monospace;
-				background-color: rgba(0,0,0,0.5);
-				padding: 15px 30px;
+				
+				padding: 1vw 2vw;
 				font-family: sans-serif;
+				display: flex;
+				justify-content: center;
+    			width: 100%;
 			}
 
 			.links{
 				bottom: unset;
-				top: 20px;
+				top: 10px;
 			}
 
 			.nav span, .links span{
 				cursor: pointer;
-				padding: 0 10px;
+				padding: .3vw 1vw;
 			}
 
 			.nav span.active, .links span.active{
 				pointer-events: none;
-				color: #932cd2;
+				color: #fff;
+				background: #000;
+				border-radius: 8px
 			}
 
 			.preloader{
@@ -81,6 +86,23 @@
 				color:#fff;
 				font-weight: bold;
 				line-height: 0.8;
+			}
+			@media screen and (max-width: 992px) {
+			 	.nav, .links{
+			    	font-size: 4vw;
+			  	}
+			  	.links span{
+					margin: 0 .5vw;
+					padding:1vw 2vw;
+				}
+				.nav span{
+					margin: 0 .5vw;
+					padding:1vw 2vw;
+				}
+				.text p{
+					font-size: 18vw;
+					line-height: .9;
+				}
 			}
 		</style>
 	</head>

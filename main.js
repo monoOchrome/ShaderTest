@@ -19,15 +19,15 @@ var C = {
             this.wgl = WGL
                 .with('.cnvs')
                 .using(sliderVS, sliderFS)
-                .resources([{url: 'img/efes2.jpg'}, {url: 'img/lady.jpg'}, {url: 'img/mount.jpg'}])
+                .resources([{url: 'img/mount.jpg'}, {url: 'img/lady.jpg'}, {url: 'img/efes2.jpg'}])
                 .on('trigger')
                 .displace({url: 'img/maps/12.jpg'})
                 .using(fake3DVS, fake3DFS)
                 .on('move')
                 .blend([
-                    {url: 'img/maps/efes2.jpg', shaderData: {x_fac: 30, y_fac: -30}},
+                    {url: 'img/maps/mount-map.jpg', shaderData: {x_fac: 10, y_fac: -35}},
                     {url: 'img/maps/lady.jpg', shaderData: {x_fac: 35, y_fac: 15}},
-                    {url: 'img/maps/mount-map.jpg', shaderData: {x_fac: 10, y_fac: -35}}
+                    {url: 'img/maps/efes2.jpg', shaderData: {x_fac: 30, y_fac: -30}}
                 ])
                 .onComplete(function(){
                     $('.preloader').remove();
@@ -43,6 +43,11 @@ var C = {
                 C.touchEndX = event.changedTouches[0].screenX;
                 C.onTouch();
             }, false); 
+        }else{
+            $(window).on("mousemove", function(event){
+                C.targetX = (event.clientX  - window.innerWidth / 2) / 32;
+                C.targetY = (event.clientY  - window.innerHeight / 2) / 32;
+            });
         }
 
         $(".nav span").on("click", function(event){
@@ -65,11 +70,6 @@ var C = {
             if($(event.target).hasClass("active")) return;
             $(event.target).addClass("active").siblings().removeClass("active");
             C.wgl.displace(C.disps[$(event.target).index()]);
-        });
-
-        $(window).on("mousemove", function(event){
-			C.targetX = (event.clientX  - window.innerWidth / 2) / 32;
-			C.targetY = (event.clientY  - window.innerHeight / 2) / 32;
         });
 
         requestAnimationFrame(this.animate.bind(this));
@@ -102,7 +102,7 @@ var C = {
             C.wgl.actions['orientation'].enable();
             gn.start(function(data){
                 var x = WGL.utils.clamp(data.do.gamma, -C.maxTilt,  C.maxTilt) * ((window.innerWidth / 2) / C.maxTilt)
-                C.targetX = x / 16;
+                C.targetX = x / 32;
                 C.wgl.actions['orientation'].targetX = -WGL.utils.clamp(data.do.gamma, -C.maxTilt, C.maxTilt) / C.maxTilt;
                 // C.wgl.actions['orientation'].targetY = -WGL.utils.clamp(data.do.beta - 70, -C.maxTilt, C.maxTilt) / C.maxTilt;
             });
